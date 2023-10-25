@@ -75,7 +75,7 @@ const Registration =()=>{
                 Registration
                 </button>
                 <div className='link-login'> 
-                    <Link className='link-log' to='/todo'>Login</Link> 
+                    <Link className='link-log' to='/todo-api-'>Login</Link> 
                 </div> 
             </form>
         </div>
