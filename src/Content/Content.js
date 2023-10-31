@@ -2,7 +2,7 @@ import React from 'react';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Login from '../Login/Login';
 import Registration from '../Registration/Registration';
-import TODO from '../todo/todo';
+import Todo from '../Todo/Todo';
 
 const Content=()=>{
     return(
@@ -11,7 +11,7 @@ const Content=()=>{
                 <Routes>
                     <Route exact path='/todo-api-' element={<Login/>}/>
                     <Route exact path='/registration' element={<Registration/>}/>
-                    <Route exact path='/todo-list' element={<TODO/>}/>
+                    <Route exact path='/todo-list' element={<Todo/>}/>
                 </Routes>
             </Router>
         </div>

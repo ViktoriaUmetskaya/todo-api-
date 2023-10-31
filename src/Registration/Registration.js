@@ -6,11 +6,12 @@ import { Link } from 'react-router-dom';
 const Registration =()=>{
     
     const [data, setData] = useState({})
+    const apiUrl2=process.env.REACT_APP_API_URL_REGISTRATION;
 
     const Registration= async(e)=>{
       e.preventDefault()
       try{
-        let response= await fetch('https://todo-redev.herokuapp.com/api/users/register',{
+        let response= await fetch(apiUrl2,{
             method:"POST",
             headers:{
               'Content-Type': 'application/json'

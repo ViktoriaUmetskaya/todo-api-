@@ -1,5 +1,5 @@
 import React from 'react';
-import './form.css';
+import './Form.css';
 import {useState} from 'react';
 
 const Form=(props)=>{
@@ -11,7 +11,7 @@ const Form=(props)=>{
             setValue('');
         }}>
             <input type='text' maxLength="50" placeholder='Add a todo' className='input' id='input' value={value} onChange={e=> setValue(e.target.value)}/>
-            <button class='button'>Add Todo</button>
+            <button className='button'>Add Todo</button>
         </form>
     )
 }

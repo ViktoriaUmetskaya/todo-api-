@@ -5,17 +5,18 @@ import './Login.css';
 const Login = () => { 
     const [data, setData] = useState({}) 
     const navigate = useNavigate() 
+    const apiUrl=process.env.REACT_APP_API_URL_LOGIN;
     const SendPromises = async (e) => { 
         e.preventDefault() 
         try { 
-            const response = await fetch('https://todo-redev.herokuapp.com/api/auth/login', { 
+            const response = await fetch(apiUrl, { 
                 method: "POST", 
                 headers: { 
                     "Content-Type": "application/json" 
                 }, 
-                body: JSON.stringify({ 
-                    email: "vlad8@mail.ru", 
-                    password: "Hello_34" 
+                 body: JSON.stringify({ 
+                     email: data.email, 
+                     password: data.password 
                 }) 
             }) 
             const { token } = await response.json(); 

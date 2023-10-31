@@ -1,15 +1,3 @@
-.forma{
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top:350px;
-    width: 2500px;
-    height: 100px;
-    white-space: nowrap;
-}
-.forma :last-child{
-    margin-right: 0px;
-}
 .input{
     position: relative;
     top:0px;
