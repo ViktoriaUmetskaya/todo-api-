@@ -1,74 +1,72 @@
 import React from 'react';
-import {useState} from 'react';
+import { useSelector, useDispatch } from 'react-redux'
+import { addUsername, addEmail, addPassword, addGender, addAge } from '../Redux/Actions/RegistrationAction'
+import { addNewUser } from '../Redux/Actions/ListActions'
 import './Registration.css';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
+import {Link} from 'react-router-dom';
+
 
 const Registration =()=>{
     
-    const [data, setData] = useState({})
-    const apiUrl2=process.env.REACT_APP_API_URL_REGISTRATION;
+    const dispatch = useDispatch()
+    const {username, email, password, gender, age} = useSelector(state=>state.form || {})
+    const SendPromises = e => {
+        e.preventDefault()
 
-    const Registration= async(e)=>{
-      e.preventDefault()
-      try{
-        let response= await fetch(apiUrl2,{
-            method:"POST",
-            headers:{
-              'Content-Type': 'application/json'
-            },
-            body:JSON.stringify({
-              username: "Vlad",
-              email: "vlad8@mail.ru",
-              password: "Hello_34",
-              gender:"male",
-              age:"30"    
-                    })  
-          })
-          let result= await response.json();
-          console.log(result)
-      }
-      catch(err){
-        console.log(err)
-      }  
-        }
-        
+        const userData={
+          username: 'Vladaa',
+          email: 'vladaa8@mail.ru',
+          password: 'Hello_34',
+          gender: 'male',
+          age: '30'
+          }
+
+        axios.post('https://todo-redev.herokuapp.com/api/users/register', userData)
+        .then(response => {
+        console.log('Пользователь зарегистрирован успешно', response.data);
+        dispatch(addNewUser(userData));
+        dispatch(addUsername(''));
+        dispatch(addEmail(''));
+        dispatch(addPassword(''));
+        dispatch(addGender(''));
+        dispatch(addAge(''));
+      })
+      .catch(error => {
+        console.error('Ошибка при регистрации пользователя', error);
+        console.error('Дополнительная информация об ошибке', error.response.data);
+      });
+    }
+
     return (
         <div className='register'>
             <h1 className='register_title'>Registration</h1>
-            <form class='form' onSubmit={e=>Registration(e)}>
+            <form className='form' onSubmit={e=>SendPromises(e)}>
             <input
-                type='text'
-                placeholder='username'
                 className='username'
-                value={data.username}
-                onChange={e=>setData({...data, username:e.target.value})}
+                value={username}
+                onChange={e=>dispatch(addUsername(e.target.value))}
                 />
                 <input
-                type='text'
-                placeholder='Email'
                 className='email'
-                value={data.email}
-                onChange={e=>setData({...data, email:e.target.value})}
+                value={email}
+                onChange={e=>dispatch(addEmail(e.target.value))}
                 />
                 <input
-                type='text'
-                placeholder='Password'
                 className='password'
-                value={data.password}
-                onChange={e=>setData({...data, password:e.target.value})}
+                value={password}
+                onChange={e=>dispatch(addPassword(e.target.value))}
                 />
                 <div className='radio'>
-                    <input className='gender-input' type='radio' id='1' value={data.male} onClick={e=>setData({...data, gender:e.target.value})}/>
+                    <input className='gender-input' type='radio' id='1' value={gender} onClick={e=>addGender(addGender(e.target.value))}/>
                     <label className='gender' for='1'>Male</label>
-                    <input className='gender-input' type='radio' id='2' value={data.female} onClick={e=>setData({...data, gender:e.target.value})}/>
+                    <input className='gender-input' type='radio' id='2' value={gender} onClick={e=>addGender(addGender(e.target.value))}/>
                     <label className='gender' for='2'>Female</label> 
                 </div>
                 <input
-                type='number'
-                placeholder='age'
                 className='age'
-                value={data.age}
-                onChange={e=>setData({...data, password2:e.target.value})}
+                value={age}
+                onChange={e=>dispatch(addAge(e.target.value))}
                 />
                 <button
                 type='submit'
@@ -76,7 +74,7 @@ const Registration =()=>{
                 Registration
                 </button>
                 <div className='link-login'> 
-                    <Link className='link-log' to='/todo-api-'>Login</Link> 
+                    <Link className='link-log' to='/todo-redux'>Login</Link> 
                 </div> 
             </form>
         </div>

@@ -9,7 +9,7 @@ const Content=()=>{
         <div className='content'>
             <Router>
                 <Routes>
-                    <Route exact path='/todo-api-' element={<Login/>}/>
+                    <Route exact path='/todo-redux' element={<Login/>}/>
                     <Route exact path='/registration' element={<Registration/>}/>
                     <Route exact path='/todo-list' element={<Todo/>}/>
                 </Routes>

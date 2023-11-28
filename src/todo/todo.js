@@ -1,40 +1,51 @@
 import './Todo.css';
-import {useEffect, useState} from 'react';
 import Form from '../Form/Form.js';
-import Editedform from '../Form/Editedform.js'
+import { useSelector, useDispatch } from 'react-redux'
+import { addTodo, toggleTodoAction,removeTodos,editTodo, editText, clearEdit, updateTodo } from '../Redux/Actions/TodoActions'
+import Delete from '../Img/Delete.png'
+import Edit from '../Img/Edit.png';
 
 function Todo(){
 
-    const[todos,setTodos]=useState([]);
-    const[allTodos,setAllTodos]=useState(0);
-    const[allComplete,setAllComplete]=useState(0);
-
-    useEffect(()=>{
-        setAllComplete(todos.filter(todo=>todo.done).length)
-    },[todos])
+    const dispatch = useDispatch();
+    const {todos, allTodos, allComplete,editingTodo, editingText } = useSelector(state => state.todo)
 
     const putTodo=(value)=>{
         if(value){
-            setTodos([...todos,{id:Date.now(), text:value, done:false}])
-            setAllTodos(allTodos + 1)
+            dispatch(addTodo({id:Date.now(), text:value, done:false}))
         } else {
             console.log('Введите текс')
         }
     }
 
-    const toggleTodo=(id)=>{
-        setTodos(todos.map(todo=>{
-            if(todo.id!==id) return todo;
-            return{
-                ...todo,
-                done:!todo.done
-            }
-        }))
-    }
+    const toggleTodo = (id) => {
+        dispatch(toggleTodoAction(id));
+    };
 
     const clearTodos=()=>{
-        setTodos([])
-        setAllTodos(0)
+        dispatch(removeTodos())
+    }
+    
+    const editedTodo=(id)=>{
+        const todoToEdit = todos.find((todo)=>todo.id === id)
+        if(todoToEdit){
+            dispatch(editTodo(id));
+            dispatch(editText(todoToEdit.text))
+}
+}
+    const saveEditedTodo = (id) => {
+        if(editingText.trim() !==''){
+        dispatch(updateTodo(id, editingText));
+      }};
+
+    const handleKeyPress = (e, id) => {
+        if (e.key === "Enter") {
+            saveEditedTodo(id);
+        }
+    };
+
+    const removeTodo=(id)=>{
+        dispatch(clearEdit(id))
     }
 
     return(
@@ -46,8 +57,34 @@ function Todo(){
                     {
                         todos.map(todo=>{
                             return (
-                                <li className={todo.done ? 'todo done' : 'todo'} key={todo.id} onClick={()=>toggleTodo(todo.id)}>
-                                <Editedform todos={todos} todo={todo} setTodos={setTodos} setAllTodos={setAllTodos} allTodos={allTodos}/>
+                                <li className={todo.done ? 'todo done' : 'todo'} key={todo.id} onClick={() => toggleTodo(todo.id)}>
+                                {todo.id === editingTodo ? (
+                                <>
+                                    <input className='editingInput'
+                                       id='editingInput'
+                                        type="text"
+                                        value={editingText}
+                                        onChange={(e) => dispatch(editText(e.target.value))}
+                                        onKeyPress={(e) => handleKeyPress(e, todo.id)} 
+                                        onBlur={() => saveEditedTodo(todo.id)}
+                                    />
+                                    <button className='button-update'
+                                        onKeyPress={() => saveEditedTodo(todo.id)} 
+                                    >Update</button>
+                                    </>
+                                    ) : (
+                                <>
+                                    {todo.text}
+                                    <img src={Edit} alt='edit' className='edit' onClick={(e)=>{
+                                        e.stopPropagation();
+                                        editedTodo(todo.id);
+                                    }}/>
+                                    <img src={Delete} alt='delete' className='delete' onClick={(e)=>{
+                                        e.stopPropagation();
+                                        removeTodo(todo.id);
+                                    }}/>
+                                </>
+                                )}
                                 </li>
                             )
                         })                        
@@ -56,7 +93,7 @@ function Todo(){
                         <span>All todos: {allTodos}</span>
                         <span>Complete: {allComplete}</span>
                     </div>
-                    <button className='btnn' onClick={clearTodos} >Clear all</button>
+                    <button className='btnn' onClick={()=>clearTodos()} >Clear all</button>
                     
                 </ul>
             </div>

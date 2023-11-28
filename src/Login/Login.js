@@ -1,54 +1,53 @@
-import React, { useState } from 'react'; 
+import React from 'react'; 
+import { useSelector, useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'; 
 import './Login.css'; 
+import {addEmail, addPassword} from '../Redux/Actions/LoginActions';
+
  
 const Login = () => { 
-    const [data, setData] = useState({}) 
+    const dispatch = useDispatch();
+    const {email, password} = useSelector(state => state.login);
     const navigate = useNavigate() 
-    const apiUrl=process.env.REACT_APP_API_URL_LOGIN;
-    const SendPromises = async (e) => { 
-        e.preventDefault() 
+    const SendPromises = async(e) => {
+        e.preventDefault()
         try { 
-            const response = await fetch(apiUrl, { 
-                method: "POST", 
-                headers: { 
-                    "Content-Type": "application/json" 
-                }, 
-                 body: JSON.stringify({ 
-                     email: data.email, 
-                     password: data.password 
-                }) 
+            const response = await fetch('https://todo-redev.herokuapp.com/api/auth/login', { 
+            method: "POST", 
+            headers: { 
+                "Content-Type": "application/json" 
+            }, 
+            body: JSON.stringify({ 
+                email: 'vladaa8@mail.ru', 
+                password: 'Hello_34' 
+            }) 
             }) 
             const { token } = await response.json(); 
             if (token) { 
                 localStorage.setItem("token", token); 
                 console.log("token:", token) 
                 navigate("/todo-list") 
-            }else{
-                navigate('/todo-api-')
+             }else{
+                navigate('/todo-redux')
             }
-        } catch (err) { 
-            console.log(err) 
+            } catch (err) { 
+                console.log(err) 
+                } 
         } 
-    } 
- 
+
     return ( 
         <div className='login'> 
             <h1 className='login_title'>Authorization</h1> 
             <form className='form' onSubmit={(e) => SendPromises(e)}> 
                 <input 
-                    type='text' 
-                    placeholder='Email' 
                     className='email' 
-                    value={data.email} 
-                    onChange={e => setData({ ...data, email: e.target.value })} 
+                    value={email}
+                    onChange={e=>dispatch(addEmail(e.target.value))}
                 /> 
                 <input 
-                    type='password' 
-                    placeholder='Password' 
-                    className='password' 
-                    value={data.password} 
-                    onChange={e => setData({ ...data, password: e.target.value })} 
+                    className='password'
+                    value={password}
+                    onChange={e=>dispatch(addPassword(e.target.value))}
                 /> 
                 <button 
                     className='btn' 
